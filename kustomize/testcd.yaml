@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testcd
+  namespace: test
+  labels:
+    app: testcd
+spec:
+  selector:
+    matchLabels:
+      app: testcd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: testcd
+    spec:
+      containers:
+      - name: testcd
+        image: testcd:1.0.0
+        ports:
+        - containerPort: 8000
+        imagePullPolicy: "Never"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "200Mi"
+          requests:
+            cpu: "0.5"
+            memory: "100Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: testcd
+  namespace: test
+  labels:
+    app: testcd
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    app: testcd
